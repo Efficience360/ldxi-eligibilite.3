@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Éligibilité LDXi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 1em;
+      margin: 5px 0;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Test d'éligibilité au raccordement LDXi</h2>
+  <input type="text" id="zipcode" placeholder="Entrez votre code postal">
+  <button onclick="checkEligibility()">Vérifier</button>
+  <div id="result"></div>
+
+  <script>
+    const villes = {
+  "64500": "Saint Jean de Luz",
+  "64210": "Bidard",
+  "64200": "Biarritz",
+  "64600": "Anglet",
+  "64100": "Bayonne",
+  "64340": "Boucau",
+  "40990": "Angoumé",
+  "40100": "Dax",
+  "40180": "Benesse les Dax",
+  "40090": "Bostens",
+  "40040": "Saint Perdon",
+  "40000": "Mont de Marsan",
+  "40280": "Bretagne de Marsan",
+  "40120": "Puydesseaux",
+  "32810": "Lahitte",
+  "32000": "Auch",
+  "32550": "Montégut",
+  "32450": "Castelnau Barbarens",
+  "32270": "Crastes",
+  "32120": "Augnax",
+  "33230": "Saint Medard de Guizieres",
+  "33124": "Savignac",
+  "33440": "Saint Vincent de Paul",
+  "33810": "Ambes",
+  "33510": "Andernos les Bains",
+  "33390": "Saint Seurin de Cursac",
+  "33640": "Portets",
+  "33760": "Targon",
+  "33120": "Arcachon",
+  "33460": "Soussans",
+  "33740": "Ares",
+  "33370": "Yvrac",
+  "33500": "Pomerol",
+  "33240": "Virsac",
+  "33430": "Sauviac",
+  "33980": "Audenge",
+  "33790": "Soussac",
+  "33480": "Sainte Helene",
+  "33190": "Saint Seve",
+  "33730": "Villandraut",
+  "33750": "Saint Quentin de Baron",
+  "33720": "Virelade",
+  "33530": "Bassens",
+  "33880": "Saint Caprais de Bordeaux",
+  "33710": "Villeneuve",
+  "33340": "Valeyrac",
+  "33130": "Begles",
+  "33410": "Sainte Croix du Mont",
+  "33830": "Lugos",
+  "33350": "Sainte Terre",
+  "33210": "Toulenne",
+  "33380": "Mios",
+  "33290": "Parempuyre",
+  "33540": "Sauveterre de Guyenne",
+  "33670": "Saint Leon",
+  "33910": "Savignac de l'Isle",
+  "33000": "Bordeaux",
+  "33100": "Bordeaux",
+  "33200": "Bordeaux",
+  "33300": "Bordeaux",
+  "33800": "Bordeaux",
+  "33270": "Floirac",
+  "33113": "Saint Symphorien",
+  "33420": "Tizac de Curton",
+  "33820": "Saint Palais",
+  "33520": "Bruges",
+  "33650": "Saucats",
+  "33140": "Villenave d'Ornon",
+  "33360": "Quinsac",
+  "33660": "Saint Seurin sur l'Isle",
+  "33610": "Gazinet",
+  "33970": "Cap Ferret",
+  "33550": "Villenave de Rions",
+  "33220": "Sainte Foy la Grande",
+  "33840": "Saint Michel de Castelnau",
+  "33560": "Sainte Eulalie",
+  "33121": "Carcans Plage",
+  "33490": "Verdelais",
+  "33690": "Sillas",
+  "33620": "Tizac de Lapouyade",
+  "33260": "La Teste de Buch",
+  "33150": "Cenon",
+  "33250": "Saint Sauveur",
+  "33920": "Saugon",
+  "33890": "Pessac sur Dordogne",
+  "33580": "Taillecavat",
+  "33860": "Reignac",
+  "33320": "Le Taillan Medoc",
+  "33570": "Tayac",
+  "33126": "Saint Michel de Fronsac",
+  "33133": "Galgon",
+  "33170": "Gradignan",
+  "33590": "Vensac",
+  "33470": "Le Teich",
+  "33125": "Saint Magne",
+  "33990": "Naujac sur Mer",
+  "33450": "Saint Sulpice et Cameyrac",
+  "33680": "Saumos",
+  "33138": "Lanton",
+  "33148": "Taussat",
+  "33114": "Le Barp",
+  "33110": "Le Bouscat",
+  "33950": "Lege Cap Ferret",
+  "33185": "Le Haillan",
+  "33123": "Le Verdon sur Mer",
+  "33850": "Leognan",
+  "33310": "Lormont",
+  "33127": "Saint Jean d'Illac",
+  "33700": "Merignac",
+  "33600": "Pessac",
+  "33115": "Pyla sur Mer",
+  "33141": "Villegouge",
+  "33160": "Salaunes",
+  "33330": "Vignonet",
+  "33180": "Vertheuil",
+  "33112": "Saint Laurent Medoc",
+  "33770": "Salles",
+  "33780": "Soulac sur Mer",
+  "33400": "Talence",
+  "33870": "Vayres",
+  "33930": "Vendays Montalivet",
+  "65260": "Villelongue",
+  "65100": "Viger",
+  "65240": "Vielle Louron",
+  "65400": "Vier Bordes",
+  "65360": "Vielle Adour",
+  "65440": "Guchen",
+  "65390": "Sarniguet",
+  "65510": "Mont",
+  "65150": "Tuzaguet",
+  "65690": "Montignac",
+  "65370": "Troubat",
+  "65140": "Ugnouas",
+  "65220": "Villembits",
+  "65200": "Visker",
+  "65170": "Vignec",
+  "65560": "Ferrieres",
+  "65230": "Villemur",
+  "65670": "Monlong",
+  "65130": "Tilhouse",
+  "65500": "Villenave Pres Marsac",
+  "65710": "Sainte Marie de Campan",
+  "65350": "Thuy",
+  "65800": "Orleix",
+  "65700": "Villefranque",
+  "65660": "Tibiran Jaunac",
+  "65380": "Ossun",
+  "65120": "Vizos",
+  "65460": "Bours",
+  "65250": "Saint Arroman",
+  "65190": "Tournay",
+  "65410": "Sarrancolin",
+  "65330": "Tournous Devant",
+  "65590": "Ris",
+  "65320": "Tarasteix",
+  "65300": "Uglas",
+  "65110": "Cauterets",
+  "65310": "Odos",
+  "65420": "Ibos",
+  "65290": "Louey",
+  "65490": "Oursbelille",
+  "65270": "Saint Pe de Bigorre",
+  "65600": "Semeac",
+  "65430": "Soues",
+  "65000": "Tarbes",
+};
+
+    function checkEligibility() {
+      const code = document.getElementById("zipcode").value.trim();
+      const result = document.getElementById("result");
+
+      if (!/^\d{5}$/.test(code)) {
+        result.innerText = "Code postal invalide.";
+        result.style.color = "red";
+        return;
+      }
+
+      if (villes[code]) {
+        result.innerText = "✅ Oui, vous êtes raccordable par LDXi à " + villes[code] + " (" + code + ").";
+        result.style.color = "green";
+      } else {
+        result.innerText = "❌ Non, nous ne raccordons pas encore cette localisation.";
+        result.style.color = "orange";
+      }
+    }
+  </script>
+</body>
+</html>
